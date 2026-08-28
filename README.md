@@ -1,5 +1,11 @@
 # Linux Impulse Triggers
 
+> [!IMPORTANT]
+> **AI-assisted project:** OpenAI Codex materially assisted with the
+> investigation, code, scripts, and documentation. All physical controller
+> tests and confirmed in-game results were performed by a human. See
+> [AI_DISCLOSURE.md](AI_DISCLOSURE.md).
+
 Genuine, game-controlled Xbox-style impulse-trigger rumble on Linux through
 SDL's direct USB/GIP backend and Wine/Proton's existing four-motor path.
 
