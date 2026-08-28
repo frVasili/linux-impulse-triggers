@@ -199,10 +199,18 @@ until game startup and the four-motor path have both been verified.
 ## Technical notes and upstream references
 
 - [`docs/investigation.md`](docs/investigation.md)
+- [`AI_DISCLOSURE.md`](AI_DISCLOSURE.md)
 - [SDL Xbox One HIDAPI backend](https://github.com/libsdl-org/SDL/blob/main/src/joystick/hidapi/SDL_hidapi_xboxone.c)
 - [SDL 8BitDo HIDAPI backend](https://github.com/libsdl-org/SDL/blob/main/src/joystick/hidapi/SDL_hidapi_8bitdo.c)
 - [Wine SDL winebus backend](https://gitlab.winehq.org/wine/wine/-/blob/master/dlls/winebus.sys/bus_sdl.c)
 - [Linux xpad driver](https://github.com/torvalds/linux/blob/master/drivers/input/joystick/xpad.c)
+
+## AI disclosure
+
+OpenAI Codex materially assisted with this project's investigation, test code,
+scripts, and documentation. The physical four-motor tests and final in-game
+behavior were performed and confirmed by a human. See
+[`AI_DISCLOSURE.md`](AI_DISCLOSURE.md) for details.
 
 ## License
 
