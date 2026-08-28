@@ -1,0 +1,15 @@
+Tested with Forza Horizon 6 (Steam AppID 2483190).
+
+Requirements:
+
+- Steam Input disabled for this game
+- A native Proton build using the host SDL/libusb stack
+- A narrowly scoped udev rule for the controller's exact VID:PID
+
+Launch options:
+
+SDL_HIDAPI_LIBUSB=1 SDL_HIDAPI_LIBUSB_WHITELIST=0 SDL_JOYSTICK_HIDAPI=1 SDL_JOYSTICK_HIDAPI_XBOX=1 SDL_JOYSTICK_HIDAPI_XBOX_ONE=1 SDL_JOYSTICK_HIDAPI_GIP=1 SDL_JOYSTICK_HIDAPI_GIP_RESET_FOR_METADATA=0 WINEDLLOVERRIDES="version=n,b" %command%
+
+Exact confirmed compatibility tool:
+
+proton-cachyos-11.0-20260703 (native)
