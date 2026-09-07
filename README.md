@@ -21,13 +21,18 @@ pressure.
 
 ## Status
 
-Confirmed working end to end with:
+Confirmed on the **8BitDo Ultimate Wired Controller for Xbox**, USB
+`2dc8:2015`, on CachyOS, with Steam Input disabled:
 
-- 8BitDo Ultimate Wired Controller for Xbox, USB `2dc8:2015`
-- CachyOS with SDL 3.4.14 and `sdl2-compat` 2.32.70
-- `proton-cachyos-native` 11.0-20260703
-- Forza Horizon 6, Steam AppID `2483190`
-- Steam Input disabled
+| Game | Proton path | Result |
+|---|---|---|
+| Forza Horizon 6 (`2483190`) | `proton-cachyos-native` 11.0-20260703; SDL 3.4.14 / sdl2-compat 2.32.70 | Human-confirmed in-game impulse triggers |
+| Forza Motorsport (2023) (`2440510`) | `GE-Proton11-3-FM` inside Steam Linux Runtime 4; private SDL 3.4.16 / sdl2-compat 2.32.72 / libusb 1.0.30; controller-ID workaround | Human-confirmed controls and in-game impulse triggers, 2026-09-06 |
+
+**Native CachyOS Proton is not a universal requirement.** Motorsport works
+inside the Steam runtime with a suitable SDL/libusb stack. FH6 using this
+container approach, and use on other distributions, remain untested here.
+See the [Motorsport findings and reproduction notes](docs/forza-motorsport-2023.md).
 
 Official Xbox One/Series and other licensed USB controllers using Microsoft's
 GIP protocol are strong candidates, but should be listed as confirmed only
@@ -57,11 +62,18 @@ USB/GIP packet. The blockers were:
    motors.
 2. SDL needed write access to the raw USB device to select its direct GIP
    backend.
-3. Steam Linux Runtime's container did not expose `/dev/bus/usb`, so the game
-   needed a native Proton build using the host SDL/libusb stack.
+3. The initial FH6 runtime test could not open direct USB; native Proton
+   provided a working host-library route. The later Motorsport investigation
+   verified that Runtime 4 exposed raw USB, but its supplied SDL still chose
+   evdev. Loading private SDL/libusb copies inside that runtime restored GIP.
+4. Motorsport additionally rejected physical controllers because its Wine
+   `NonRoamableId` implementation returned `E_NOTIMPL`. An exact-build WGI DLL
+   workaround restored controller enumeration in the game.
 
-No kernel, xpad, SDL, Wine, or Proton source patch was needed for the confirmed
-controller.
+FH6 required no source or binary patch. Motorsport required a four-byte
+controller-ID DLL workaround, but no kernel, xpad, or SDL source changes.
+The earlier blanket claim that Steam's container necessarily hides raw USB
+was too broad; test both device visibility and the actual library/backend.
 
 ## Safety and scope
 
@@ -168,9 +180,9 @@ For the confirmed FH6 setup:
 3. Add the launch options from
    [`steam/forza-horizon-6.txt`](steam/forza-horizon-6.txt).
 
-The standard Steam Linux Runtime/Pressure Vessel path did not expose raw USB to
-SDL in the investigation. A controller can therefore pass the standalone host
-test but fall back to evdev when the game runs in the container.
+A successful host probe does not prove the game uses the same SDL backend.
+Probe inside its exact runtime too. The confirmed Motorsport configuration
+uses the container successfully; see its separate guide below.
 
 ## Revert
 
@@ -197,10 +209,15 @@ path, and physical results when reporting another controller.
 
 ## Forza Motorsport (2023)
 
-Not yet supported by this repository. Motorsport has an independent Xbox Game
-Runtime/Gaming Services launch blocker under ordinary Proton. Experimental GDK
-Wine work exists, but it should not be mixed into the confirmed FH6 instructions
-until game startup and the four-motor path have both been verified.
+**Confirmed working on the tested system**, including genuine independent
+left/right trigger feedback. The solution retains GE-Proton11-3-FM and Xodus,
+loads a working SDL/libusb stack inside Runtime 4, and fixes the game's failing
+physical-controller ID request. It does not synthesize rumble.
+
+Read [the full Motorsport report](docs/forza-motorsport-2023.md) for exact
+versions, evidence, the credited controller-ID workaround, reproduction
+constraints, and rollback. This is a documented experimental setup, not an
+automatic installer or a claim that every Proton build/controller works.
 
 ## Technical notes and upstream references
 

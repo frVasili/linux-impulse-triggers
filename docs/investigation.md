@@ -1,5 +1,9 @@
 # Investigation notes
 
+This section records the original FH6 investigation. The later
+[Motorsport investigation](forza-motorsport-2023.md) establishes a working
+container path and corrects the earlier blanket raw-USB limitation.
+
 ## Confirmed hardware and software
 
 - Controller: 8BitDo Ultimate Wired Controller for Xbox
@@ -68,7 +72,7 @@ Under the Steam Linux Runtime build, Wine's SDL device was the evdev/xpad
 not see a direct USB joystick. Pressure Vessel rejected attempts to share
 `/dev/bus/usb` because `/dev` is reserved by the container.
 
-## Final path
+## Confirmed FH6 path
 
 Switching FH6 to the native CachyOS Proton build removed that container boundary
 and allowed Wine's SDL backend to open the same direct USB/GIP device that had
@@ -92,7 +96,8 @@ FH6
 - No trigger-position click effect.
 - No community xpad fork that mirrors two channels into four motors.
 - No broad `0666` USB permission rule.
-- No kernel, SDL, Wine, or Proton source patch.
+- FH6 needed no kernel, SDL, Wine, or Proton patch. Motorsport later required
+  a separate controller-ID DLL workaround; see its report.
 
 ## Current limitation
 
@@ -100,3 +105,11 @@ The udev permission and direct SDL/GIP approach should generalize to other USB
 GIP controllers, but protocol family, firmware mode, SDL support, metadata, and
 physical motor layout must all be verified. Bluetooth is a different transport
 and is not covered by the confirmed result.
+
+## Motorsport follow-up, 2026-09-06
+
+Controls and genuine in-game LT/RT feedback are now human-confirmed with
+GE-Proton11-3-FM inside Runtime 4. Its USB node was accessible; private
+SDL/libusb copies enabled direct GIP. A separate WGI NonRoamableId failure
+prevented game input until an exact-build DLL workaround was applied.
+See [the complete evidence and limitations](forza-motorsport-2023.md).
